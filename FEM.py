@@ -30,10 +30,6 @@ def dielectric_homogeneous_object(filename, k, epsilon, mu):
     # Create a matplotlib triangulation object
     triangulation = tri.Triangulation(coordinates[:, 0], coordinates[:, 1], triangles)
 
-    # Plot the mesh using matplotlib
-    plt.figure()
-    plt.triplot(triangulation, 'bo-', lw=1)
-
     # Calculate cell centers manually for annotation
     cell_centers = np.mean(coordinates[triangles], axis=1)
 
@@ -43,20 +39,7 @@ def dielectric_homogeneous_object(filename, k, epsilon, mu):
         if f.exterior():  # Check if the facet is on the boundary
             for c in cells(f):
                 boundary_cells.add(c.index())
-    # Annotate each cell with its index and mark boundary cells in red
-    for i, center in enumerate(cell_centers):
-        if i in boundary_cells:
-            #plt.plot(center[0], center[1], 'ro')  # Mark center of boundary cells in red
-            plt.text(center[0], center[1], str(i), ha='center', va='center', color='red', fontsize=8)
-        else:
-            plt.text(center[0], center[1], str(i), ha='center', va='center', fontsize=8)
 
-    # Adjust plot
-    plt.xlabel('x')
-    plt.ylabel('y')
-    plt.axis('equal')  # Ensure x and y axes have the same scale for correct aspect ratio
-
-    plt.show()
 
     # Define trial and test functions for K
     u = TrialFunction(V)
@@ -86,7 +69,6 @@ def dielectric_homogeneous_object(filename, k, epsilon, mu):
     # Convert to numpy arrays, if necessary
     K = K.array()
     B_array = B.get_local()  # Use get_local() for vectors    
-    print(np.shape(B))
 
     # Get boundary nodes
     bc = DirichletBC(V, Constant(0), 'on_boundary')
